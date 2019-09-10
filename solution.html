@@ -1,0 +1,85 @@
+<!-- <h1>WEB 230 Final - Github Giphy API Search</h1> -->
+
+    <div class="outerWrapper">
+      <!-- <p>Please record your query in the input box, select a rating from the drop down menu, and press the search button to view results.</p> -->
+
+        <form autocomplete="on">
+          <input list='demo' type="text" id="userQuery" placeholder="search for a GIF "> 
+          <datalist id="demo">
+            <option>about</option>
+            <option>above</option>
+            <option>across</option>
+            <optionapp>apple</option>
+            <option>appreciate</option>
+            <option>bad</option>
+            <option>ball</option>
+            <option>balloon</option>
+            <option>bell</option>
+            <option>cat</option>
+            </datalist>
+          <br>
+          <button type="submit" id="searchButton">Go</button>
+          <br>
+           <!-- value="Input your query here."> -->
+          
+          <br>
+          <!-- <br>
+          <input type="reset" id="resetButton" value="Reset"> -->
+        </form>
+
+        <div>
+          <img id="searchResults" src=""/>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <script type="text/javascript">
+
+      // Allows page to load prior to running jQuery code.
+      $( document ).ready(function(){
+
+        // Ques function to run once searchButton is clicked.
+        $('#searchButton').on('click', function(){
+
+          // Start to construct URL that will actually be utilized in the funtion by making individual variables (some of which are dynamic) that define the search criteria.
+          var api = 'http://api.giphy.com/v1/gifs/search?q=';
+          //   var api = 'http://api.giphy.com/v1/gifs/search?q=[KEYWORD_HERE]&api_key=DLCVuTK6KZExOS7JoMq82bi5MaI6EbWO&limit=1'
+
+          // Assign variable for userQuery so it can be dynamically applied to the url.
+          var userInput = $('#userQuery').val().trim();
+            // Convert input for a sucessful API call.
+            userInput = userInput.replace(/ /g, "+");
+
+          // Set limit for maximum amount of search results displayed on one page.
+        //   var limit = '&limit=1';
+          var limit = '&limit=24';
+          // API public key.
+             var key = '&api_key=DLCVuTK6KZExOS7JoMq82bi5MaI6EbWO'
+
+          // Create new variable called queryURL which pieces together all of the above variables.
+          var queryURL = api + userInput + key + limit /*+ rating */;
+
+           // Part 2 - Use AJAX to call GIPHY API (note that the .done() function waits for the API to respond)
+          $.ajax({url: queryURL, method: 'GET'}).done(function(response){
+
+            // This is the API response data. It's a JSON object of 24 gifs
+            console.log(response.data);
+
+            // For simplicity, we will take the first gif (ie. at postion 0)
+            var giphyURL = response.data[0].images.fixed_height.url;
+            console.log(giphyURL)
+
+            // Plug image into html.
+            $('#searchResults').attr('src', giphyURL);
+
+          });
+
+          // If using a jQuery click listner on a Submit button, you need to return false to prevent the default page refresh
+          return false;
+        })
+        
+      });
+
+    </script>
